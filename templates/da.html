@@ -1,14 +1,15 @@
 <!-- extend sidebar -->
-{% extends "sidebar.html" %}
-
-
-<!-- 塞入的資料 -->
-{% block title %}首頁{% endblock title %}
-{% block main %}
-<iframe title="test" width="1140" height="541.25"
-    src="https://app.powerbi.com/reportEmbed?reportId=59346700-217b-43bd-ae60-3ef0125d3514&autoAuth=true&ctid=953deb22-c3f6-4a45-9c51-06e32ff88bf6"
-    frameborder="0" allowFullScreen="true"></iframe>
+{% extends "navbar.html" %}
 
 
 
-{% endblock main %}
+<!-- 主背景-->
+{% block main%}
+<div class="full-background">
+    <h1 style="text-align: center; color: white;">資料分析</h1>
+
+
+</div>
+
+
+{%endblock%}

@@ -13,9 +13,9 @@ app.static_folder = 'static'
 
 
 @app.route('/')
-@app.route('/home')
+@app.route('/index')
 def home():
-    return render_template('home.html', page_header="首頁")
+    return render_template('index.html', page_header="首頁")
 
 
 @app.route('/team')
@@ -45,7 +45,7 @@ def get_weather():
 @app.route('/TPE_accident', methods=['GET'])
 def taipei_accident():
 
-    json_path = './data/TPE_A1.json'
+    json_path = './data/sepDATE_TP.json'
 
     with open(json_path, encoding="utf-8") as json_file:
         data = json.load(json_file)

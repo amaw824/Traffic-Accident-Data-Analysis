@@ -1,158 +1,157 @@
 <!-- extend sidebar -->
-{% extends "sidebar.html" %}
+{% extends "navbar.html" %}
 
 
 <!-- 塞入的資料 -->
-{% block title %}地圖分析{% endblock title %}
 {% block main %}
 
-
-<div class="container-right">
-    <div class="container-right2">
-        <h2>地圖</h2>
-        <div id="SelectorContainer">
-            <label for="citySelect">科技執法地區:</label>
-            <select id="citySelect" onchange="generateMap()">
-                <option value="Default">請選擇</option>
-                <option value="TPE">臺北市</option>
-                <option value="NTP">新北市</option>
-                <option value="TY">桃園市</option>
-                <option value="TC">台中市</option>
-                <option value="TN">台南市</option>
-                <option value="KS">高雄市</option>
-            </select>
+<div class="full-background">
+    <h1 style="text-align: center; color: white;">地圖分析</h1>
+    <div id="SelectorContainer" style="text-align: center; color: white;">
+        <label for="citySelect">科技執法地區:</label>
+        <select id="citySelect" onchange="generateMap()">
+            <option value="Default">請選擇</option>
+            <option value="TPE">臺北市</option>
+            <option value="NTP">新北市</option>
+            <option value="TY">桃園市</option>
+            <option value="TC">台中市</option>
+            <option value="TN">台南市</option>
+            <option value="KS">高雄市</option>
+        </select>
 
 
-            <hr>
+        <hr>
 
-            <label for="yearSelect">事故發生年份
-                :</label>
-            <select id="yearSelect">
-                <option value="2018">2018</option>
-                <option value="2019">2019</option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-            </select>
+        <label for="yearSelect" style="color: white;">事故發生年份
+            :</label>
+        <select id="yearSelect">
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+        </select>
 
-            <label for="MonthSelect">事故發生月份:</label>
-            <select id="MonthSelect">
-                <option value="jan">1月</option>
-                <option value="feb">2月</option>
-                <option value="mar">3月</option>
-                <option value="apr">4月</option>
-                <option value="may">5月</option>
-                <option value="jun">6月</option>
-                <option value="jul">7月</option>
-                <option value="aug">8月</option>
-                <option value="sep">9月</option>
-                <option value="oct">10月</option>
-                <option value="nov">11月</option>
-                <option value="dec">12月</option>
-            </select>
-            <button id="btn_request1">查詢事故</button>
-        </div>
+        <label for="MonthSelect" style="color: white;">事故發生月份:</label>
+        <select id="MonthSelect">
+            <option value="jan">1月</option>
+            <option value="feb">2月</option>
+            <option value="mar">3月</option>
+            <option value="apr">4月</option>
+            <option value="may">5月</option>
+            <option value="jun">6月</option>
+            <option value="jul">7月</option>
+            <option value="aug">8月</option>
+            <option value="sep">9月</option>
+            <option value="oct">10月</option>
+            <option value="nov">11月</option>
+            <option value="dec">12月</option>
+        </select>
+        <button id="btn_request1">查詢事故</button>
     </div>
-    <div id="map"></div>
-
-    {% endblock main %}
-    {% block script %}
-
-    <!-- 圖層初始化 -->
-    <script>
-        var map = null; // 宣告map變數
-
-        function generateMap() {
-            var citySelect = document.getElementById("citySelect");
-            var cityValue = citySelect.value;
-            console.log(cityValue);
-
-            // 清除之前map的Marker
-            if (map != null) {
-                map.remove();
-                map = null;
-            }
-            // 根據不同的城市設置地圖的經緯度
-            var latitude, longitude;
-            if (cityValue === "TPE") {
-                latitude = 25.04899756571732;// 台北市的緯度值;
-                longitude = 121.51368522729861;// 台北市的經度值;
-            } else if (cityValue === "NTP") {
-                latitude = 25.014221504674026; // 新北市的緯度值;
-                longitude = 121.4643730074936;// 新北市的經度值;
-            } else if (cityValue === "TY") {
-                latitude = 24.992776726836773; // 桃園市的緯度值;
-                longitude = 121.31454271560115; // 桃園市的經度值;
-            }
-            else if (cityValue === "TC") {
-                latitude = 24.13744457555597; // 台中市的緯度值;
-                longitude = 120.68689288626449; // 台中市的經度值;
-            }
-            else if (cityValue === "TN") {
-                latitude = 22.999141217102405; // 台南市的緯度值;
-                longitude = 120.21355678990696; // 台南市的經度值;
-            }
-            else if (cityValue === "KS") {
-                latitude = 22.63970032386821; // 高雄市的緯度值;
-                longitude = 120.30295850521398; // 高雄市的經度值;
-            }
-
-            map = L.map('map').setView([latitude, longitude], 13);
-
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            //設定圖層群組
-            let layerGroup = null;
-            let arrMarkers = [];
+    <div id="map" style="z-index:1"></div>
+</div>
 
 
-            // 按鈕事件，取得 科技執法座標的json回傳資料，response要等取得json後放進去，暫定是array
-            function fetchData() {
-                fetch('http://127.0.0.1:5000/traffic_camera', {
-                    method: 'GET'
-                }).then(function (response) {
+{% endblock main %}
+{% block script %}
 
-                    return response.json()
+<!-- 圖層初始化 -->
+<script>
+    var map = null; // 宣告map變數
 
-                }).then(function (arr) {
-                    console.log(arr)
-                    //刪除先前的markers，如果layerGroup不為空，及圖層有內容的話就清空
-                    if (layerGroup != null && map.hasLayer(layerGroup)) {
-                        layerGroup.clearLayers();
-                        map.removeLayer(layerGroup);
-                        //變數初始化
-                        layerGroup = null;
-                        arrMarkers = [];
-                    }
+    function generateMap() {
+        var citySelect = document.getElementById("citySelect");
+        var cityValue = citySelect.value;
+        console.log(cityValue);
 
-                    // 宣告照相機圖片為marker
-                    let cameraIcon = L.icon({
-                        iconUrl: 'https://www.pngkey.com/png/detail/88-883639_speed-camera-icon.png',
-                        iconSize: [20, 20], // 圖標的尺寸
-                        iconAnchor: [22, 94], // 圖標的錨點位置
-                        popupAnchor: [-3, -76] // 彈出視窗的位置
-                    });
-
-                    //畫群組
-                    var markers = new L.MarkerClusterGroup();
-
-                    arr.filter(item => item.CITY === cityValue) //根據城市篩選
-                        .map(item => L.marker(new L.LatLng(item.LATITUDE, item.LONGITUDE), { icon: cameraIcon })  // 新增Marker
-                            .bindPopup(`<p>科技執法類型: ${item.EQUIP_TYPE}</p><p>科技執法編號: ${item.CAMERA_ID}</p><p>經度: ${item.LONGITUDE}</p><p>緯度: ${item.LATITUDE}</p>`))  // 資訊視窗
-                        .forEach(item => markers.addLayer(item));  // 把marker加入 L.markerClusterGroup中
-                    map.addLayer(markers);
-
-                });
-            };
-            fetchData(); // 初始化及載入數據
-
+        // 清除之前map的Marker
+        if (map != null) {
+            map.remove();
+            map = null;
         }
-        // }
-    </script>
+        // 根據不同的城市設置地圖的經緯度
+        var latitude, longitude;
+        if (cityValue === "TPE") {
+            latitude = 25.04899756571732;// 台北市的緯度值;
+            longitude = 121.51368522729861;// 台北市的經度值;
+        } else if (cityValue === "NTP") {
+            latitude = 25.014221504674026; // 新北市的緯度值;
+            longitude = 121.4643730074936;// 新北市的經度值;
+        } else if (cityValue === "TY") {
+            latitude = 24.992776726836773; // 桃園市的緯度值;
+            longitude = 121.31454271560115; // 桃園市的經度值;
+        }
+        else if (cityValue === "TC") {
+            latitude = 24.13744457555597; // 台中市的緯度值;
+            longitude = 120.68689288626449; // 台中市的經度值;
+        }
+        else if (cityValue === "TN") {
+            latitude = 22.999141217102405; // 台南市的緯度值;
+            longitude = 120.21355678990696; // 台南市的經度值;
+        }
+        else if (cityValue === "KS") {
+            latitude = 22.63970032386821; // 高雄市的緯度值;
+            longitude = 120.30295850521398; // 高雄市的經度值;
+        }
+
+        map = L.map('map').setView([latitude, longitude], 13);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        //設定圖層群組
+        let layerGroup = null;
+        let arrMarkers = [];
 
 
+        // 按鈕事件，取得 科技執法座標的json回傳資料，response要等取得json後放進去，暫定是array
+        function fetchData() {
+            fetch('http://127.0.0.1:5000/traffic_camera', {
+                method: 'GET'
+            }).then(function (response) {
 
-    {% endblock%}
+                return response.json()
+
+            }).then(function (arr) {
+                console.log(arr)
+                //刪除先前的markers，如果layerGroup不為空，及圖層有內容的話就清空
+                if (layerGroup != null && map.hasLayer(layerGroup)) {
+                    layerGroup.clearLayers();
+                    map.removeLayer(layerGroup);
+                    //變數初始化
+                    layerGroup = null;
+                    arrMarkers = [];
+                }
+
+                // 宣告照相機圖片為marker
+                let cameraIcon = L.icon({
+                    iconUrl: 'https://www.pngkey.com/png/detail/88-883639_speed-camera-icon.png',
+                    iconSize: [20, 20], // 圖標的尺寸
+                    iconAnchor: [22, 94], // 圖標的錨點位置
+                    popupAnchor: [-3, -76] // 彈出視窗的位置
+                });
+
+                //畫群組
+                var markers = new L.MarkerClusterGroup();
+
+                arr.filter(item => item.CITY === cityValue) //根據城市篩選
+                    .map(item => L.marker(new L.LatLng(item.LATITUDE, item.LONGITUDE), { icon: cameraIcon })  // 新增Marker
+                        .bindPopup(`<p>科技執法類型: ${item.EQUIP_TYPE}</p><p>科技執法編號: ${item.CAMERA_ID}</p><p>經度: ${item.LONGITUDE}</p><p>緯度: ${item.LATITUDE}</p>`))  // 資訊視窗
+                    .forEach(item => markers.addLayer(item));  // 把marker加入 L.markerClusterGroup中
+                map.addLayer(markers);
+
+            });
+        };
+        fetchData(); // 初始化及載入數據
+    }
+
+
+    // }
+
+</script>
+
+
+{% endblock%}
