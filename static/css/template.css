@@ -1,0 +1,149 @@
+.container-all {
+    display: flex;
+    align-items: stretch;
+}
+
+#sidebar {
+    width: 260px;
+    height: 800px;
+    background-color: #41403C;
+    color: white;
+    transition: ls;
+    font-size: 30px;
+}
+
+
+#sidebar.active {
+    margin-left: -200px;
+}
+
+.container-right {
+    background-color: #EDEFEE;
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    padding: 30px;
+}
+
+.collapse-btn {
+    position: relative;
+    top: 1%;
+    left: 220px;
+    background-color: #41403C;
+    color: white;
+    border: none;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.collapse-btn:hover {
+    background-color: EDEFEE;
+    transition: 0.4s;
+}
+
+#sidebar ul p {
+    text-align: center;
+    font: size 50px;
+    font-style: normal;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 20px;
+    display: block;
+    text-decoration: none;
+    color: white;
+}
+
+#sidebar ul li a:hover {
+    color: black;
+    background-color: white;
+}
+
+i {
+    float: right;
+
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+}
+
+.marker-cluster-small {
+    background-color: rgba(181, 226, 140, 0.6);
+}
+
+.marker-cluster-small div {
+    background-color: rgba(110, 204, 57, 0.6);
+}
+
+.marker-cluster-medium {
+    background-color: rgba(241, 211, 87, 0.6);
+}
+
+.marker-cluster-medium div {
+    background-color: rgba(240, 194, 12, 0.6);
+}
+
+.marker-cluster-large {
+    background-color: rgba(253, 156, 115, 0.6);
+}
+
+.marker-cluster-large div {
+    background-color: rgba(241, 128, 23, 0.6);
+}
+
+.marker-cluster {
+    background-clip: padding-box;
+    border-radius: 20px;
+}
+
+.marker-cluster div {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+    margin-top: 5px;
+
+    text-align: center;
+    border-radius: 15px;
+    font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+.marker-cluster span {
+    line-height: 30px;
+}
+
+@media(max-width:640px) {
+    #sidebar {
+        margin-left: -100px;
+        width: 150px;
+        font-size: 20px;
+    }
+
+    .collapse-btn {
+        position: relative;
+        top: 1%;
+        left: 110px;
+    }
+
+    #sidebar.active {
+        margin-left: 0px;
+    }
+
+    #sidebar ul li a {
+        padding: 10px;
+        font-size: 15px;
+        display: block;
+        text-decoration: none;
+        color: white;
+        text-align: left;
+    }
+
+    #sidebar ul p {
+        font-size: 15px;
+        text-align: left;
+    }
+}
