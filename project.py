@@ -2,6 +2,8 @@ from flask import Flask, make_response, render_template, request, jsonify
 import requests as req
 import json
 import math
+import sqlalchemy as db
+from mysql.connector import connect
 
 
 '''
@@ -43,6 +45,12 @@ def get_weather():
 
 
 @app.route('/accident', methods=['GET'])
+# def cloud_db():
+#     response = make_response(json.dumps(filter_data, ensure_ascii=False))
+#     # 回傳自訂回應
+#     response.headers["Content-Type"] = "application/json"
+#     response.headers['Access-Control-Allow-Origin'] = '*'
+#     return response
 def accident():
     city = request.args.get('city')
     # print(city)
@@ -73,7 +81,7 @@ def accident():
     # 後端加入年月類型的篩選邏輯
     global filter_data
     filter_data = []
-    for item in data:  # 這一行跟下一行 看起來做一樣的事情
+    for item in data:
         if item['Year'] == year and item['Month'] == month and item['ACCIDENT_TYPE'] == type:
             filter_data.append(item)
 
@@ -105,6 +113,23 @@ def traffic_camera():
     response.headers['Access-Control-Allow-Origin'] = '*'
 
     return response
+
+
+@app.route('/db')
+def db_connection():
+
+    conn = connect(user='teamone', password='teamone',
+                        host='db', database='teamone')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM sepdate_tp')
+    Result = str(cursor.fetchall())
+
+    Result.headers["Content-Type"] = "application/json"
+    Result.headers['Access-Control-Allow-Origin'] = '*'
+
+    cursor.close()
+    conn.close()
+    return Result
 
 
 if __name__ == "__main__":

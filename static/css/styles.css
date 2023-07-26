@@ -108,7 +108,42 @@ body {
 
 .full-background {
   background-color: #1d809f;
-  height: 100vh;
+  height: 150%;
+}
+
+.full-background-team {
+  background-color: #1d809f;
+  height: 25vh;
+}
+
+#SelectorContainer {
+  text-align: center;
+  justify-content: center;
+  color: white;
+  align-items: center;
+}
+
+.form-select option {
+  text-align: center;
+}
+
+label {
+  font-size: 20px;
+}
+
+
+select {
+  /* 讓下拉式選單佔據一整行，以便設置寬度和置中 */
+  font-size: 0.875rem;
+  text-align-last: center;
+  /* 將下拉式選單文字置中對齊 (支援部分瀏覽器) */
+  text-align: center;
+  /* 將下拉式選單文字置中對齊 (兼容其他瀏覽器) */
+  margin: auto;
+  /* 水平居中 */
+  border-radius: 0.25rem;
+  width: fit-content;
+  /* 讓下拉式選單寬度隨內容調整 */
 }
 
 hr {
@@ -199,9 +234,20 @@ h6,
   font-size: 1rem;
 }
 
+.custom-image-size {
+  width: 70%;
+  height: auto;
+  /* 保持圖片原有的寬高比例 */
+
+}
+
+
+
 p {
   margin-top: 0;
   margin-bottom: 1rem;
+  font-size: larger;
+  font-weight: bolder;
 }
 
 abbr[title] {
@@ -748,8 +794,8 @@ progress {
 }
 
 .row {
-  --bs-gutter-x: 1.5rem;
-  --bs-gutter-y: 0;
+  --bs-gutter-x: 3rem;
+  --bs-gutter-y: 3rem;
   display: flex;
   flex-wrap: wrap;
   margin-top: calc(-1 * var(--bs-gutter-y));
@@ -1289,6 +1335,11 @@ progress {
   }
 
   .col-md-12 {
+    display: flex;
+    justify-content: center;
+    /* 水平置中 */
+    align-items: center;
+    /* 垂直置中 */
     flex: 0 0 auto;
     width: 100%;
   }
@@ -2536,6 +2587,11 @@ textarea.form-control-lg {
   padding-left: 0.5rem;
   font-size: 0.875rem;
   border-radius: 0.25rem;
+  width: min-content;
+  text-align-last: center;
+  /* 將下拉式選單文字置中對齊 (支援部分瀏覽器) */
+  text-align: center;
+  /* 將下拉式選單文字置中對齊 (兼容其他瀏覽器) */
 }
 
 .form-select-lg {
@@ -2544,6 +2600,11 @@ textarea.form-control-lg {
   padding-left: 1rem;
   font-size: 1.25rem;
   border-radius: 0.5rem;
+  width: min-content;
+  text-align-last: center;
+  /* 將下拉式選單文字置中對齊 (支援部分瀏覽器) */
+  text-align: center;
+  /* 將下拉式選單文字置中對齊 (兼容其他瀏覽器) */
 }
 
 .form-check {
@@ -8665,7 +8726,7 @@ fieldset:disabled .btn {
 }
 
 .mb-5 {
-  color: black;
+  color: #2F4F4F;
   margin-bottom: 3rem !important;
 }
 
@@ -13340,4 +13401,52 @@ footer.footer .social-link:hover {
     opacity: 0;
     -moz-transform: rotate(900deg);
   }
+}
+
+
+/* team */
+@import url(//fonts.googleapis.com/css?family=Montserrat:300,500);
+
+.team4 {
+  font-family: "Montserrat", sans-serif;
+  color: #8d97ad;
+  font-weight: 300;
+}
+
+.team4 h1,
+.team4 h2,
+.team4 h3,
+.team4 h4,
+.team4 h5,
+.team4 h6 {
+  color: #3e4555;
+}
+
+.team4 .font-weight-medium {
+  font-weight: 500;
+}
+
+.team4 h5 {
+  line-height: 22px;
+  font-size: 18px;
+}
+
+.team4 .subtitle {
+  color: #8d97ad;
+  line-height: 24px;
+  font-size: 13px;
+}
+
+.team4 ul li a {
+  color: #8d97ad;
+  padding-right: 15px;
+  -webkit-transition: 0.1s ease-in;
+  -o-transition: 0.1s ease-in;
+  transition: 0.1s ease-in;
+}
+
+.team4 ul li a:hover {
+  -webkit-transform: translate3d(0px, -5px, 0px);
+  transform: translate3d(0px, -5px, 0px);
+  color: #316ce8;
 }
