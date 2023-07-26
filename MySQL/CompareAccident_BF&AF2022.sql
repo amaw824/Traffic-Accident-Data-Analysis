@@ -1,5 +1,4 @@
--- 比較2022/12/01前後的月平均事故量
-
+-- 比較2022/12/01擴大科技執法前後的月平均事故量
 -- 非鄰近科技執法點的事故地點 月平均
 SELECT sub1.accident_ADDR,
        AVG(sub1.before_) AS before_avg_BY_MONTH,

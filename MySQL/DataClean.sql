@@ -89,6 +89,14 @@ SELECT * FROM (
     LIMIT 1000 OFFSET 0 -- 第一批數據
 ) AS batch;
 
+-- 在目標資料庫中創建新的資料表
+CREATE TABLE target_database.new_table LIKE source_database.source_table;
+
+
+-- 將數據從源資料庫的資料表複製到目標資料庫的新資料表
+INSERT INTO target_database.new_table SELECT * FROM source_database.source_table;
+
+
 -- 依次處理後續批次數據
 INSERT INTO new_table
 SELECT * FROM (
@@ -107,4 +115,6 @@ SELECT * FROM (
 ) AS batch;
 
 -- 重複此過程，更改OFFSET值，直到處理完所有數據
+
+
 
