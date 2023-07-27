@@ -1,9 +1,10 @@
+from MachineLearning.Catboost.instant_forecast_funtion import get_instant_weather_data, add_data_to_six_city_hot_spots, preprocessing_for_feeding_model, get_probability, get_six_city_hot_spots_json, determine_the_csv_to_read
 from flask import Flask, make_response, render_template, request, jsonify
 import requests as req
 import json
 import math
 import sqlalchemy as db
-from mysql.connector import connect
+# from mysql.connector import connect
 
 
 '''
@@ -35,13 +36,42 @@ def da():
     return render_template('da.html', page_header="資料分析")
 
 
-@app.route('/weather', methods=['GET'])
-def get_weather():
-    # 串天氣資料api
+@app.route('/weather')
+def weather():
+    city = request.args.get('city')
+    # print(city)
+    vehicle = request.args.get('year')
+    # print(vehicle)
+    gender = request.args.get('month')
+    # print(gender)
+    age = request.args.get('type')
+    # print(age)
 
-    return render_template('weather.html')
+    return render_template('weather.html', page_header="預測事故熱點")
 
-    # response.headers['Access-Control-Allow-Origin'] = '*'
+
+@app.route('/hotSpot', methods=['GET'])
+def hotSpot():
+    df_six_city_hot_spots = determine_the_csv_to_read()
+    weather_api_data_dict = get_instant_weather_data()
+    vehicle = "機車"
+    gender = "女"
+    age = "中年"
+    df = add_data_to_six_city_hot_spots(
+        df_six_city_hot_spots, weather_api_data_dict, vehicle, gender, age)
+    df_prob = df
+    X_test = preprocessing_for_feeding_model(df)
+    df_prob = get_probability(X_test, df_prob)
+    six_city_hot_spots_json = get_six_city_hot_spots_json(df_prob)
+    # print(six_city_hot_spots_json)
+
+    response = make_response(six_city_hot_spots_json)
+
+    # 回傳自訂回應
+    response.headers["Content-Type"] = "application/json"
+    response.headers['Access-Control-Allow-Origin'] = '*'
+
+    return response
 
 
 @app.route('/accident', methods=['GET'])
