@@ -308,8 +308,8 @@
         }
 
     } function clearMapLayers() {
-        if (map && markers) {
-            map.removeLayer(markers);
+        if (markers != null) {
+            markers.clearLayers();
         }
     }
 </script>
