@@ -44,7 +44,6 @@ def get_instant_weather_data():
 
     # 取得JSON格式的回應內容
     automatic_station_data = response.json()
-
     response = requests.get(url_automatic_station_rain,
                             headers=headers, params=params)
 
@@ -53,17 +52,20 @@ def get_instant_weather_data():
 
     needs_elements = {"TEMP", "WDSD", "HUMD"}
 
-# 儲存所有 location 的元素值
+# 儲存所有天氣測站的所需的值
     all_station_needs_values_dict = {}
 
     for location in automatic_station_data['records']['location']:
         # 儲存這個 location 的元素值
         element_values = {}
 
+        # 抓出weatherElement裡面需要的欄位
         for element in location['weatherElement']:
             if element['elementName'] in needs_elements:
+                # element_values的Key是elementName，值是elementValue{'WDSD': '6.8', 'TEMP': '24.9', 'HUMD': '0.94'}
                 element_values[element['elementName']
                                ] = element['elementValue']
+        # stationId 為key,value是element_values{'C0AC60': {'WDSD': '0.3', 'TEMP': '29.0', 'HUMD': '0.83'}}
         all_station_needs_values_dict[location['stationId']] = element_values
 
     for location in automatic_station_rain_data['records']['location']:
@@ -72,6 +74,7 @@ def get_instant_weather_data():
             if element['elementName'] == "RAIN":
                 all_station_needs_values_dict[location['stationId']
                                               ]["RAIN"] = element['elementValue']
+    # print(all_station_needs_values_dict) {'C0AC60': {'WDSD': '0.3', 'TEMP': '29.0', 'HUMD': '0.83', 'RAIN': '-998.00'}}
     return all_station_needs_values_dict
 
 
@@ -87,6 +90,7 @@ def add_data_to_six_city_hot_spots(df_six_city_hot_spots, weather_api_data_dict,
     df_six_city_hot_spots['STATION_ID'] = df_six_city_hot_spots['STATION_ID'].astype(
         str)
 
+    # pandas中的iterrows()方法來遍歷DataFrame df_six_city_hot_spots 中的每一行資料，並根據每一行的 'STATION_ID' 值，更新 'WHOLE_TIME' 和 'Temperature' 等欄位的值
     for index, row in df_six_city_hot_spots.iterrows():
         try:
             df_six_city_hot_spots.loc[index, 'WHOLE_TIME'] = current_hour
@@ -141,6 +145,7 @@ def preprocessing_for_feeding_model(df):
     df = df.drop(
         columns=[col for col in df.columns if col not in features_to_keep])
 
+    # 轉換為數值型態，"coerce" 表示當出現錯誤時，將錯誤值轉換為 NaN（Not a Number）
     # df["SPEED_LIMIT"] = df["SPEED_LIMIT"].astype(int)
     df[["Temperature", "RH", "WS", "Precp"]] = df[
         ["Temperature", "RH", "WS", "Precp"]
@@ -197,15 +202,14 @@ def get_probability(X_test, df_prob):
     with open("./MachineLearning/Catboost/catboost_model.pkl", "rb") as f:
         model = pickle.load(f)
 
-    # 使用模型進行預測
-    y_prob = model.predict_proba(X_test)[:, 1]  # 生成機率值
+    for index, row in X_test.iterrows():
+        df_row = pd.DataFrame(row).transpose()
+        y_prob = model.predict_proba(df_row)[:, 1]
+        df_prob.loc[index, 'Probability'] = y_prob
 
-    # 將預測機率添加回 DataFrame
-    df_prob["Probability"] = y_prob
     df_prob['CITY'] = df_prob['CITY'].replace(["臺北市", "新北市", "桃園市", "臺中市", "臺南市", "高雄市"], [
                                               "TPE", "NTP", "TY", "TC", "TN", "KS"])
-
-    df_prob["Probability"] = df_prob["Probability"].apply(
+    df_prob["Probability1"] = df_prob["Probability"].apply(
         lambda x: f'{x*100:.2f}%' if x*100 > 0.001 else "小於0.01%")
 
     return df_prob
@@ -224,19 +228,19 @@ def get_six_city_hot_spots_json(df):
 
 
 # 以下為在其他檔案要import上面的方法的程式碼
-if __name__ == "__main__":
-    from instant_forecast_funtion import get_instant_weather_data, add_data_to_six_city_hot_spots, preprocessing_for_feeding_model, get_probability, get_six_city_hot_spots_json
-    df_six_city_hot_spots = determine_the_csv_to_read()
-    weather_api_data_dict = get_instant_weather_data()
-    vehicle = "機車"
-    gender = "女"
-    age = "中年"
-    df = add_data_to_six_city_hot_spots(
-        df_six_city_hot_spots, weather_api_data_dict, vehicle, gender, age)
-    df_prob = df
-    X_test = preprocessing_for_feeding_model(df)
-    df_prob = get_probability(X_test, df_prob)
-    six_city_hot_spots_json = get_six_city_hot_spots_json(df_prob)
-    print(six_city_hot_spots_json)
+# if __name__ == "__main__":
+#     from instant_forecast_funtion import get_instant_weather_data, add_data_to_six_city_hot_spots, preprocessing_for_feeding_model, get_probability, get_six_city_hot_spots_json
+#     df_six_city_hot_spots = determine_the_csv_to_read()
+#     weather_api_data_dict = get_instant_weather_data()
+#     vehicle = "機車"
+#     gender = "女"
+#     age = "中年"
+#     df = add_data_to_six_city_hot_spots(
+#         df_six_city_hot_spots, weather_api_data_dict, vehicle, gender, age)
+#     df_prob = df
+#     X_test = preprocessing_for_feeding_model(df)
+#     df_prob = get_probability(X_test, df_prob)
+#     six_city_hot_spots_json = get_six_city_hot_spots_json(df_prob)
+#     print(df_prob["Probability"])
 
-    # 寫出json檔的時候檔名是否要加一個亂數這樣其他使用者財不會覆蓋掉原本的json檔
+    # print(six_city_hot_spots_json)

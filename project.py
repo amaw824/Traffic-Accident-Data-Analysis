@@ -3,7 +3,7 @@ from flask import Flask, make_response, render_template, request, jsonify
 import requests as req
 import json
 import math
-import sqlalchemy as db
+# import sqlalchemy as db
 # from mysql.connector import connect
 
 
@@ -38,14 +38,6 @@ def da():
 
 @app.route('/weather')
 def weather():
-    city = request.args.get('city')
-    # print(city)
-    vehicle = request.args.get('year')
-    # print(vehicle)
-    gender = request.args.get('month')
-    # print(gender)
-    age = request.args.get('type')
-    # print(age)
 
     return render_template('weather.html', page_header="預測事故熱點")
 
@@ -54,16 +46,25 @@ def weather():
 def hotSpot():
     df_six_city_hot_spots = determine_the_csv_to_read()
     weather_api_data_dict = get_instant_weather_data()
-    vehicle = "機車"
-    gender = "女"
-    age = "中年"
+
+    city = request.args.get('cityValue')
+    print(city)
+    vehicle = request.args.get('vehicle')
+    print(vehicle)
+    gender = request.args.get('gender')
+    print(gender)
+    age = request.args.get('age')
+    print(age)
+
+    # vehicle = "機車"
+    # gender = "女"
+    # age = "中年"
     df = add_data_to_six_city_hot_spots(
         df_six_city_hot_spots, weather_api_data_dict, vehicle, gender, age)
     df_prob = df
     X_test = preprocessing_for_feeding_model(df)
     df_prob = get_probability(X_test, df_prob)
     six_city_hot_spots_json = get_six_city_hot_spots_json(df_prob)
-    # print(six_city_hot_spots_json)
 
     response = make_response(six_city_hot_spots_json)
 
@@ -145,21 +146,22 @@ def traffic_camera():
     return response
 
 
-@app.route('/db')
-def db_connection():
+# @app.route('/db')
+# def db_connection():
 
-    conn = connect(user='teamone', password='teamone',
-                        host='db', database='teamone')
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM sepdate_tp')
-    Result = str(cursor.fetchall())
+#     conn = connect(user='teamone', password='teamone',
+#                         host='db', database='teamone')
+#     cursor = conn.cursor()
 
-    Result.headers["Content-Type"] = "application/json"
-    Result.headers['Access-Control-Allow-Origin'] = '*'
+#     cursor.execute('SELECT * FROM sepdate_tp')
+#     Result = str(cursor.fetchall())
 
-    cursor.close()
-    conn.close()
-    return Result
+#     Result.headers["Content-Type"] = "application/json"
+#     Result.headers['Access-Control-Allow-Origin'] = '*'
+
+#     cursor.close()
+#     conn.close()
+#     return Result
 
 
 if __name__ == "__main__":
