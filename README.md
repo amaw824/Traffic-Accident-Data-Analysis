@@ -40,16 +40,19 @@ Matplolib套件畫圖程式參考參考Python folder底下trafficAnalysis.ipynb�
 
 ## 機器學習：
 結合天氣，事故及科技執法總合併資料訓練模型，透過機器學習，根據相關特徵值預測重大事故發生機率。
-機器學習之流程：訓練資料欄位＞特徵種類＆模型選擇＞編碼＆標準化＞特徵工程＞模型評估指標＞資料偏態調整＞模型最佳參數調校＞模型選擇＞檢視模型表現。
-綜合評估模型表現&時效，選擇CatBoost，程式參考MachineLearning資料夾。
+機器學習之流程：訓練資料欄位＞特徵種類及模型選擇＞編碼＆標準化＞特徵工程＞模型評估指標＞資料偏態調整＞模型最佳參數調校＞模型選擇＞檢視模型表現。
+綜合評估模型表現及時效，選擇CatBoost，程式參考MachineLearning資料夾。
 
 ## 程式總整理：
 資料收集與清整過程總共需應用到的程式
 
 Python資料夾
-1.天氣爬蟲 weatherCrawl.ipynb   
-2.經緯度距離計算calculateLongitudeLatitudeDistance.ipynb   
-3.資料分析 trafficanalysis.ipynb
+1.天氣爬蟲程式 weatherCrawl.ipynb 
+2.天氣資料csv導入資料庫 importWeatherToMySQL
+3.經緯度距離計算calculateLongitudeLatitudeDistance.ipynb   
+4.Matplotlib資料分析 accidentAnalysis.ipynb
+5.將csv轉換為JSON檔程式 convertCSVtoJSON.py
+6.將資料庫中資料寫出來轉成CSV ExportCSVfromMySQL.py
 
 ## 視覺化及網頁　　　
 1.主程式：   
