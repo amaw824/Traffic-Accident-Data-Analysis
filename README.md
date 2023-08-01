@@ -46,13 +46,13 @@ Matplolib套件畫圖程式參考參考Python folder底下trafficAnalysis.ipynb�
 ## 程式總整理：
 資料收集與清整過程總共需應用到的程式
 
-Python資料夾
-1.天氣爬蟲程式 weatherCrawl.ipynb 
-2.天氣資料csv導入資料庫 importWeatherToMySQL
-3.經緯度距離計算calculateLongitudeLatitudeDistance.ipynb   
-4.Matplotlib資料分析 accidentAnalysis.ipynb
-5.將csv轉換為JSON檔程式 convertCSVtoJSON.py
-6.將資料庫中資料寫出來轉成CSV ExportCSVfromMySQL.py
+Python資料夾   
+1.天氣爬蟲程式 weatherCrawl.ipynb    
+2.天氣資料csv導入資料庫 importWeatherToMySQL   
+3.經緯度距離計算calculateLongitudeLatitudeDistance.ipynb      
+4.Matplotlib資料分析 accidentAnalysis.ipynb     
+5.將csv轉換為JSON檔程式 convertCSVtoJSON.py    
+6.將資料庫中資料寫出來轉成CSV ExportCSVfromMySQL.py    
 
 ## 視覺化及網頁　　　
 1.主程式：   
