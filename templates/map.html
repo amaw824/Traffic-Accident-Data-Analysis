@@ -2,6 +2,12 @@
 {% extends "navbar.html" %}
 
 
+<!-- 更改title -->
+{% block title %}
+地圖分析
+{% endblock %}
+
+
 <!-- 塞入的資料 -->
 {% block main %}
 
@@ -55,6 +61,10 @@
         </select>
         <br>
         <button id="btn_request1" type="button" class="btn btn-light" onclick="searchData()" disabled>查詢事故</button>
+        <button id="btn_request2" type="button" class="btn btn-light" onclick="sendDataToServer()"
+            style="display: none;">送出參數
+        </button>
+
 
     </div>
 
@@ -85,14 +95,47 @@
 {% endblock main %}
 {% block script %}
 
+
 <!-- 圖層初始化 -->
 <script>
-    var map = null; // 宣告map變數
+    var markers = new L.MarkerClusterGroup();
+
+    function sendDataToServer() {
+        var cityValue = document.getElementById("citySelect").value;
+        var yearValue = document.getElementById("yearSelect").value;
+        var monthValue = document.getElementById("monthSelect").value;
+        var typeValue = document.getElementById("typeSelect").value;
+
+        //  year、month、type 值取得
+        const params = new URLSearchParams({
+            city: cityValue,
+            year: yearValue,
+            month: monthValue,
+            type: typeValue,
+        });
+
+        const url = `http://127.0.0.1:5000/db?${params}`;
+
+        fetch(url, {
+            method: 'GET',
+            mode: 'no-cors', // 可以使用 no-cors 模式來禁用瀏覽器的 CORS 檢查
+        })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // 呼叫函數
+    sendDataToServer();
+
+    // 宣告map變數
+    var map = null;
+
 
     function generateMap() {
-
         var citySelect = document.getElementById("citySelect");
         var cityValue = citySelect.value;
+
         console.log(cityValue);
 
         // 根據選中city判斷是否啟用其他select
@@ -155,10 +198,8 @@
             longitude = 120.30295850521398; // 高雄市的經度值;
         }
 
-
         map = L.map('map').setView([latitude, longitude], 13);
         layer1.addTo(map);
-
 
 
         //設定圖層群組
@@ -205,59 +246,36 @@
 
         };
         fetchData(); // 初始化及載入數據
-
     }
 
-    var markers = new L.MarkerClusterGroup();
 
     function searchData() {
-
-        var loadingSpinner = document.getElementsByClassName("windows8")[0];
-        loadingSpinner.style.display = "block";
-
+        //這邊試查詢事故的方法 
         var cityValue = document.getElementById("citySelect").value;
         var yearValue = document.getElementById("yearSelect").value;
         var monthValue = document.getElementById("monthSelect").value;
         var typeValue = document.getElementById("typeSelect").value;
+
+        //  year、month、type 值取得
+        const params = new URLSearchParams({
+            city: cityValue,
+            year: yearValue,
+            month: monthValue,
+            type: typeValue,
+        });
+
+        const url = `http://127.0.0.1:5000/localdb?${params}`;
+
+        var loadingSpinner = document.getElementsByClassName("windows8")[0];
+        loadingSpinner.style.display = "block";
         console.log(yearValue, monthValue, typeValue);
 
         if (map == null) {
             map = L.map('map').setView([25.04899756571732, 121.51368522729861], 13);
         }
 
-        // // 發送連資料庫的請求
 
-        // fetch('http://35.185.174.235/db', {
-        //     method: 'GET',
-        // }).then(function (response) {
-        //     console.log('123')
-        //     return response.json()
-
-
-        // }).then(function (data) {
-        //     // 在這裡處理取得的搜尋結果資料        
-        //     clearMapLayers(); // 清空圖層
-        //     console.log(data);
-        //     // 或者呼叫其他函式處理資料
-        //     processSearchData(data, yearValue, monthValue, typeValue);
-        // })
-        //     .catch(error => {
-        //         console.error('錯誤訊息:', error.message)
-        //             ;
-        //     }).finally(function () {
-        //         // 隱藏搜尋中提示元素1j6g4
-        //         loadingSpinner.style.display = "none"
-
-        //     });
-
-
-
-        fetch('http://127.0.0.1:5000/accident?' + new URLSearchParams({
-            city: cityValue,
-            year: yearValue,
-            month: monthValue,
-            type: typeValue,
-        }), {
+        fetch(/*'http://127.0.0.1:5000/localdb'*/url, {
             method: 'GET',
         }).then(function (response) {
             return response.json()
@@ -265,19 +283,7 @@
             // 在這裡處理取得的搜尋結果資料
             clearMapLayers(); // 清空圖層
             console.log(data);
-            // 或者呼叫其他函式處理資料
-            processSearchData(data, yearValue, monthValue, typeValue);
-        })
-            .catch(error => {
-                console.error('錯誤訊息:', error.message)
-                    ;
-            }).finally(function () {
-                // 隱藏搜尋中提示元素
-                loadingSpinner.style.display = "none"
 
-            });
-
-        function processSearchData(filter_data, yearValue, monthValue, typeValue) {
             //設定圖層群組
             let arrMarkers_accident = [];
 
@@ -294,24 +300,28 @@
             //畫群組
             //var markers = new L.MarkerClusterGroup();
 
-            filter_data.map(item => L.marker(new L.LatLng(item.LATITUDE, item.LONGITUDE), { icon: accidentIcon })  // 新增Marker
+            data.map(item => L.marker(new L.LatLng(item.LATITUDE, item.LONGITUDE), { icon: accidentIcon })  // 新增Marker
                 .bindPopup(`<p>年份: ${item.Year}</p><p>月份: ${item.Month}</p><p>類型: ${item.ACCIDENT_TYPE}</p>`))  // 資訊視窗
                 .forEach(item => markers.addLayer(item));  // 把marker加入 L.markerClusterGroup中
             map.addLayer(markers);
-            //前端篩選邏輯
-            // data.filter(item => item.Year === yearValue && item.Month === monthValue && item.ACCIDENT_TYPE === typeValue) //根據年月類型篩選
-            //     .map(item => L.marker(new L.LatLng(item.LATITUDE, item.LONGITUDE), { icon: accidentIcon })  // 新增Marker
-            //         .bindPopup(`<p>經度: ${item.LONGITUDE}</p><p>緯度: ${item.LATITUDE}</p>`))  // 資訊視窗
-            //     .forEach(item => markers.addLayer(item));  // 把marker加入 L.markerClusterGroup中
-            // map.addLayer(markers);
 
-        }
+        })
+            .catch(error => {
+                console.error('錯誤訊息:', error.message)
+                    ;
+            }).finally(function () {
+                // 隱藏搜尋中提示元素
+                loadingSpinner.style.display = "none"
 
-    } function clearMapLayers() {
+            });
+    }
+    function clearMapLayers() {
         if (markers != null) {
             markers.clearLayers();
         }
     }
+
+
 </script>
 
 

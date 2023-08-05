@@ -235,8 +235,10 @@ h6,
 }
 
 .custom-image-size {
-  width: 70%;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 等比例縮放圖片，使其填滿整個容器 */
   /* 保持圖片原有的寬高比例 */
 
 }

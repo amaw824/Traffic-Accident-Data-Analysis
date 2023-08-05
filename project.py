@@ -3,7 +3,9 @@ from flask import Flask, make_response, render_template, request, jsonify
 import requests as req
 import json
 import math
-# import sqlalchemy as db
+import pymysql
+
+# import MySQLdb
 # from mysql.connector import connect
 
 
@@ -13,6 +15,13 @@ Flask 初始化
 app = Flask(__name__, template_folder='templates',
             static_folder="****", static_url_path="/****")
 app.static_folder = 'static'
+
+
+# 資料庫連線設定
+db_host = "192.168.36.16"
+db_user = "teamone"
+db_password = "teamone"
+db_name = "teamone"
 
 
 @app.route('/')
@@ -36,10 +45,10 @@ def da():
     return render_template('da.html', page_header="資料分析")
 
 
-@app.route('/weather')
+@app.route('/prediction')
 def weather():
 
-    return render_template('weather.html', page_header="預測事故熱點")
+    return render_template('prediction.html', page_header="預測事故熱點")
 
 
 @app.route('/hotSpot', methods=['GET'])
@@ -48,17 +57,14 @@ def hotSpot():
     weather_api_data_dict = get_instant_weather_data()
 
     city = request.args.get('cityValue')
-    print(city)
+    # print(city)
     vehicle = request.args.get('vehicle')
-    print(vehicle)
+    # print(vehicle)
     gender = request.args.get('gender')
-    print(gender)
+    # print(gender)
     age = request.args.get('age')
-    print(age)
+    # print(age)
 
-    # vehicle = "機車"
-    # gender = "女"
-    # age = "中年"
     df = add_data_to_six_city_hot_spots(
         df_six_city_hot_spots, weather_api_data_dict, vehicle, gender, age)
     df_prob = df
@@ -76,12 +82,6 @@ def hotSpot():
 
 
 @app.route('/accident', methods=['GET'])
-# def cloud_db():
-#     response = make_response(json.dumps(filter_data, ensure_ascii=False))
-#     # 回傳自訂回應
-#     response.headers["Content-Type"] = "application/json"
-#     response.headers['Access-Control-Allow-Origin'] = '*'
-#     return response
 def accident():
     city = request.args.get('city')
     # print(city)
@@ -146,6 +146,77 @@ def traffic_camera():
     return response
 
 
+@app.route('/localdb')
+def access_database():
+    city = request.args.get('city')
+    # print(city)
+    year = request.args.get('year')
+    if (year == None):
+        year = 2022
+   # print(year)
+    month = request.args.get('month')
+    if (month == None):
+        month = 1
+   # print(month)
+    type = request.args.get('type')
+    if (type == None):
+        type = 'A1'
+   # print(type)
+
+    if city == "NTP":
+        city = "新北市"
+    elif city == "TY":
+        city = "桃園市"
+    elif city == "TC":
+        city = "臺中市"
+    elif city == "TN":
+        city = "臺南市"
+    elif city == "KS":
+        city = "高雄市"
+    else:  # 預設 TPE
+        city = "臺北市"
+
+    # 建立資料庫連線
+    connection = pymysql.connect(
+        host=db_host, user=db_user, passwd=db_password, db=db_name
+    )
+
+    # 建立 cursor 物件
+    cursor = connection.cursor()
+
+    # 輸入 MySQL 查詢或操作
+    CallSP = '''
+    CALL RETURN_LL('{}', '{}', '{}', '{}')
+    '''.format(city, month, year, type)
+
+    print(CallSP)
+
+    cursor.execute(CallSP)
+    data = cursor.fetchall()
+
+    # 將資料與表頭對應成字典形式
+    converted_data = [{
+        "LONGITUDE": d[0],
+        "LATITUDE": d[1],
+        "ACCIDENT_DEAD": d[2],
+        "ACCIDENT_INJURY": d[3]
+    } for d in data]
+
+    response = make_response(json.dumps(converted_data, ensure_ascii=False))
+
+    print(response)
+
+    # 回傳自訂回應
+    response.headers["Content-Type"] = "application/json"
+    response.headers['Access-Control-Allow-Origin'] = '*'
+
+    # 關閉 cursor 與資料庫連線
+    cursor.close()
+    connection.close()
+
+    return response
+
+
 # @app.route('/db')
 # def db_connection():
 
@@ -158,7 +229,6 @@ def traffic_camera():
 
 #     Result.headers["Content-Type"] = "application/json"
 #     Result.headers['Access-Control-Allow-Origin'] = '*'
-
 #     cursor.close()
 #     conn.close()
 #     return Result
