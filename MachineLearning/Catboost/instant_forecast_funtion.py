@@ -213,12 +213,6 @@ def get_probability(X_test, df_prob):
     df_prob["Probability1"] = df_prob["Probability"].apply(
         lambda x: f'{x*100:.2f}%' if x*100 > 0.001 else "小於0.01%")
 
-    # y_prob_series = df_prob['Probability']
-    # sorted_probs = y_prob_series.sort_values(ascending=False)
-    # # 分為三個群，調整bin的切點區間為[0, 0.3), [0.3, 0.6), [0.6, 1.0]
-    # df_prob['group'] = pd.cut(sorted_probs, bins=3, labels=[
-    #                           'Red', 'Yellow', 'Green'])
-
     times_series = df_prob['TIMES']
     # 使用cut函數將times欄位的值分為兩個區間（兩群），分為兩個群，bins=[1, 4, 7]代表切點為1和4，即[1, 4)和[4, 7)
     df_prob['GROUP'] = pd.cut(

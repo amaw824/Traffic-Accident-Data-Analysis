@@ -144,7 +144,7 @@
                     iconUrl: 'https://img.onl/VgRZmB',
                     iconSize: [60, 60],// 圖標的尺寸
                     iconAnchor: [20, 30],// 圖標的錨點位置point of the icon which will correspond to marker's location
-                    popupAnchor: [-3, -76]// 彈出視窗的位置/ point from which the popup should open relative to the iconAnchor
+                    popupAnchor: [-3, -300]// 彈出視窗的位置/ point from which the popup should open relative to the iconAnchor
                 });
 
                 // 宣告紅色icon
@@ -175,7 +175,7 @@
                         let marker = L.marker(new L.LatLng(item.LATITUDE, item.LONGITUDE), {
                             icon: icon
 
-                        }).bindPopup(`<p>事故熱區: ${item.Probability1}</p>`);
+                        }).bindPopup(`<p>肇事熱區目前發生事故機率: ${item.Probability1}</p>`);
                         marker.addTo(map);
                     });
             });

@@ -29,7 +29,7 @@
 
         <label for="yearSelect" style="color: white;">事故發生年份
             :</label>
-        <select id="yearSelect" disabled>
+        <select id="yearSelect" onchange="updateMonthOptions()" disabled>
             <option value="2018">2018</option>
             <option value="2019">2019</option>
             <option value="2020">2020</option>
@@ -71,7 +71,10 @@
 
     <div id="map" style="z-index:1"></div>
     <div class="windows8" style="display: none;z-index:2">
-        <div class="wBall" id="wBall_1">
+        <!-- 車子的loading樣式 -->
+        <img src="https://img.onl/vTbVBb" alt="Loading..." style="width: 300px; margin-left: -150px;" />
+        <!-- ..的loading樣式 -->
+        <!-- <div class="wBall" id="wBall_1">
             <div class="wInnerBall"></div>
         </div>
         <div class="wBall" id="wBall_2">
@@ -85,7 +88,7 @@
         </div>
         <div class="wBall" id="wBall_5">
             <div class="wInnerBall"></div>
-        </div>
+        </div> -->
     </div>
 
 
@@ -100,33 +103,7 @@
 <script>
     var markers = new L.MarkerClusterGroup();
 
-    function sendDataToServer() {
-        var cityValue = document.getElementById("citySelect").value;
-        var yearValue = document.getElementById("yearSelect").value;
-        var monthValue = document.getElementById("monthSelect").value;
-        var typeValue = document.getElementById("typeSelect").value;
 
-        //  year、month、type 值取得
-        const params = new URLSearchParams({
-            city: cityValue,
-            year: yearValue,
-            month: monthValue,
-            type: typeValue,
-        });
-
-        const url = `http://127.0.0.1:5000/db?${params}`;
-
-        fetch(url, {
-            method: 'GET',
-            mode: 'no-cors', // 可以使用 no-cors 模式來禁用瀏覽器的 CORS 檢查
-        })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
-
-    // 呼叫函數
-    sendDataToServer();
 
     // 宣告map變數
     var map = null;
@@ -247,6 +224,61 @@
         };
         fetchData(); // 初始化及載入數據
     }
+
+
+    function updateMonthOptions() {
+        const yearSelect = document.getElementById("yearSelect");
+        const monthSelect = document.getElementById("monthSelect");
+
+        // 取得目前選取的年份值
+        const selectedYear = parseInt(yearSelect.value);
+
+        // 目前年份為2023年，則禁用5月後的選項
+        if (selectedYear === 2023) {
+            for (let i = 6; i <= 12; i++) {
+                const option = monthSelect.querySelector(`option[value="${i}"]`);
+                option.disabled = true;
+            }
+        } else {
+            // 如果選取的年份不是2023年，則啟用所有選項
+            for (let i = 1; i <= 12; i++) {
+                const option = monthSelect.querySelector(`option[value="${i}"]`);
+                option.disabled = false;
+            }
+        }
+    }
+
+    // 初始化時執行一次，確保初始狀態正確
+    updateMonthOptions();
+
+    function sendDataToServer() {
+        var cityValue = document.getElementById("citySelect").value;
+        var yearValue = document.getElementById("yearSelect").value;
+        var monthValue = document.getElementById("monthSelect").value;
+        var typeValue = document.getElementById("typeSelect").value;
+
+        //  year、month、type 值取得
+        const params = new URLSearchParams({
+            city: cityValue,
+            year: yearValue,
+            month: monthValue,
+            type: typeValue,
+        });
+
+        const url = `http://127.0.0.1:5000/db?${params}`;
+
+        fetch(url, {
+            method: 'GET',
+            mode: 'no-cors', // 可以使用 no-cors 模式來禁用瀏覽器的 CORS 檢查
+        })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // 呼叫函數
+    sendDataToServer();
+
 
 
     function searchData() {
