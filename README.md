@@ -63,7 +63,7 @@ Python資料夾
 因總筆數有到280多萬筆，若一次在地圖上顯示，會使Loading速度降低，因此資料拆為六都年月，在使用者選取城市，可以先看到科技執法地點，使用者再輸入年、月、事故類型後，才到後台取得年月Json資料，傳回前台，顯示在地圖上。   
 
 3.資料分析：   
-最終清整結果導入Tableau製作儀表板，示意圖參考TableauDashboard.gif   
+最終清整結果導入Tableau製作儀表板，示意圖參考 https://public.tableau.com/app/profile/ann.yang3512/viz/TPE_TrafficAccident/1?publish=yes 
 
 4.即時事故熱點預測：   
 收集2018-2023/5交通部道安資訊網所公布的六都事故熱點，收集經緯度座標，預測這些事故熱區發生事故的機率。 將產生的模型結合天氣API取得我們所要的天氣特徵，包含溫度濕度降雨量，合併成一個Dataframe後餵進去模型，產生y預測值後，轉換成Json格式，再傳回前台，畫在地圖上。 示意圖參考predictionHotSpot.gif
