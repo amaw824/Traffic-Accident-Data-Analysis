@@ -1,5 +1,7 @@
 # Traffic-Accident-Data-Analysis交通事故與科技執法專題
 專題介紹：台灣交通事故死傷人數逐年攀升，交通部近年大幅修繕交通設施，2022年12月1日擴大實施科技執法取締，希望透過大數據分析了解科技執法對提升交通安全是否有幫助，並預測事故熱區在特定條件下發生事故機率。
+網頁呈現：影片連結
+https://drive.google.com/file/d/10PcV1dCl-O8kCii0BoNZlhewMnjOLRAk/view?usp=sharing
 
 ## 資料收集：   
 1.六都天氣觀測資料(每小時)   
